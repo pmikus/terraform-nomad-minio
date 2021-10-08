@@ -1,20 +1,5 @@
 <!-- markdownlint-disable MD041 -->
 
-## Content
-1. [Terraform-nomad-minio](#terraform-nomad-minio)
-2. [Compatibility](#compatibility)
-3. [Requirements](#requirements)
-    1. [Required modules](#required-modules)
-    2. [Required software](#required-software)
-4. [Usage](#usage)
-    1. [Verifying setup](#verifying-setup)
-5. [Example usage](#example-usage)
-6. [Secrets & Credentials](#secrets--credentials)
-    1. [Set credentials manually](#set-credentials-manually)
-    2. [Set credentials using Vault secrets](#set-credentials-using-vault-secrets)
-7. [Volumes](#volumes)
-
-
 # Terraform-nomad-minio
 Terraform-nomad-minio module is IaaC - infrastructure as a code. Module contains
 a nomad job with [Minio](https://min.io).
