@@ -1,7 +1,7 @@
 variable "nomad_provider_address" {
   description = "Nomad cluster address."
   type        = string
-  default     = "http://nomad.service.consul:4646"
+  default     = "https://127.0.0.1:4646"
 }
 
 variable "nomad_acl" {

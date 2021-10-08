@@ -1,4 +1,9 @@
 terraform {
+  backend "consul" {
+    address = "consul.service.consul:8500"
+    scheme  = "http"
+    path    = "terraform/nomad"
+  }
   required_providers {
     nomad = {
       source  = "hashicorp/nomad"

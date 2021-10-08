@@ -145,7 +145,7 @@ job "${job_name}" {
         dns_servers  = [ "172.17.0.1" ]
         network_mode = "host"
         command      = "server"
-        args         = [ "${host}:${port_static}${volume_destination}" ]
+        args         = [ "${volume_destination} --console-address ':${port_static}'" ]
         ports        = [ ${port} ]
         privileged   = false
       }

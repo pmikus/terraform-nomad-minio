@@ -8,20 +8,20 @@
 module "minio" {
   source = "../"
   providers = {
-    nomad = nomad.dc1
+    nomad = nomad.vagrant
   }
 
   # nomad
-  datacenters = ["dc1"]
-  host_volume = "volume-data1-1"
+  datacenters   = ["vagrant"]
+  volume_source = "volume-data1-1"
 
   # minio
-  job_name        = "minio"
-  group_count     = 1
-  service_name    = "minio"
-  host            = "http://10.0.2.15"
-  port            = 9000
-  container_image = "minio/minio:RELEASE.2021-07-27T02-40-15Z"
+  job_name     = "minio"
+  group_count  = 1
+  service_name = "minio"
+  host         = "http://10.0.2.15"
+  port         = 9000
+  image        = "minio/minio:latest"
   vault_secret = {
     use_vault_provider        = false,
     vault_kv_policy_name      = "kv-secret",
@@ -29,8 +29,8 @@ module "minio" {
     vault_kv_field_access_key = "access_key",
     vault_kv_field_secret_key = "secret_key"
   }
-  data_dir        = "/data/"
-  use_host_volume = true
-  use_canary      = true
-  envs            = ["MINIO_BROWSER=\"on\""]
+  volume_destination = "/data/"
+  use_host_volume    = true
+  use_canary         = true
+  envs               = ["MINIO_BROWSER=\"on\""]
 }
