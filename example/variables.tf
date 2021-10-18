@@ -1,11 +1,29 @@
-variable "nomad_provider_address" {
-  description = "Nomad cluster address."
-  type        = string
-  default     = "https://127.0.0.1:4646"
-}
-
 variable "nomad_acl" {
   description = "Nomad ACLs enabled/disabled"
   type        = bool
   default     = false
+}
+
+variable "nomad_provider_address" {
+  description = "Nomad cluster address."
+  type        = string
+  default     = "https://nomad.service.consul:4646"
+}
+
+variable "nomad_provider_ca_file" {
+  description = "A local file path to a PEM-encoded certificate authority."
+  type        = string
+  default     = "/etc/nomad.d/ssl/nomad-ca.pem"
+}
+
+variable "nomad_provider_cert_file" {
+  description = "A local file path to a PEM-encoded certificate."
+  type        = string
+  default     = "/etc/nomad.d/ssl/cli.pem"
+}
+
+variable "nomad_provider_key_file" {
+  description = "A local file path to a PEM-encoded private key."
+  type        = string
+  default     = "/etc/nomad.d/ssl/cli-key.pem"
 }

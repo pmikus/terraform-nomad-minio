@@ -142,11 +142,17 @@ job "${job_name}" {
       # documentation for more information.
       config {
         image        = "${image}"
-        dns_servers  = [ "172.17.0.1" ]
+        dns_servers  = [
+          "172.17.0.1"
+        ]
         network_mode = "host"
         command      = "server"
-        args         = [ "${volume_destination} --console-address ':${port_static}'" ]
-        ports        = [ ${port} ]
+        args         = [
+          "${volume_destination} --console-address ':${port_static}'"
+        ]
+        ports        = [
+          "http"
+        ]
         privileged   = false
       }
 
@@ -171,12 +177,12 @@ job "${job_name}" {
       #
       service {
         name       = "${service_name}"
-        port       = "${port}"
+        port       = "http"
         tags       = [ "${service_name}$${NOMAD_ALLOC_INDEX}" ]
         check {
           name     = "Min.io Server HTTP Check Live"
           type     = "http"
-          port     = "${port}"
+          port     = "http"
           protocol = "http"
           method   = "GET"
           path     = "/minio/health/live"
@@ -186,7 +192,7 @@ job "${job_name}" {
         check {
           name     = "Min.io Server HTTP Check Ready"
           type     = "http"
-          port     = "${port}"
+          port     = "http"
           protocol = "http"
           method   = "GET"
           path     = "/minio/health/ready"
@@ -215,7 +221,7 @@ job "${job_name}" {
         #     https://www.nomadproject.io/docs/job-specification/network
         #
         network {
-          port "${port}" {
+          port "http" {
             static = ${port_static}
           }
         }
