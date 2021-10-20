@@ -148,11 +148,11 @@ job "${job_name}" {
         network_mode = "host"
         command      = "server"
         args         = [
-          "${volume_destination} --console-address ':${port_static}'"
+          " --console-address ':9001' ${volume_destination}"
         ]
-        ports        = [
-          "http"
-        ]
+        port_map {
+          http       = ${port_static}
+        }
         privileged   = false
       }
 
@@ -161,12 +161,12 @@ job "${job_name}" {
       env {
 %{ if use_vault_provider }
 {{ with secret "${vault_kv_path}" }}
-        MINIO_ACCESS_KEY = "{{ .Data.data.${vault_kv_field_access_key} }}"
-        MINIO_SECRET_KEY = "{{ .Data.data.${vault_kv_field_secret_key} }}"
+        MINIO_ROOT_USER     = "{{ .Data.data.${vault_kv_field_access_key} }}"
+        MINIO_ROOT_PASSWORD = "{{ .Data.data.${vault_kv_field_secret_key} }}"
 {{ end }}
 %{ else }
-        MINIO_ACCESS_KEY = "${access_key}"
-        MINIO_SECRET_KEY = "${secret_key}"
+        MINIO_ROOT_USER     = "${access_key}"
+        MINIO_ROOT_PASSWORD = "${secret_key}"
 %{ endif }
         ${ envs }
       }

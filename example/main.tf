@@ -13,7 +13,7 @@ module "minio" {
 
   # nomad
   datacenters   = ["vagrant"]
-  volume_source = "volume-data1-1"
+  volume_source = "volume-glacier1-1"
 
   # minio
   job_name     = "minio"
