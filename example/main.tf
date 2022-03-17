@@ -20,7 +20,7 @@ module "minio" {
   group_count  = 1
   service_name = "minio"
   host         = "http://10.0.2.15"
-  port         = 9000
+  port_base    = 9000
   image        = "minio/minio:latest"
   vault_secret = {
     use_vault_provider        = false,

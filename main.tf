@@ -22,8 +22,9 @@ data "template_file" "nomad_job_minio" {
     max_parallel              = var.max_parallel
     memory                    = var.memory
     memory_proxy              = var.resource_proxy.memory
-    port                      = var.port
-    port_static               = var.port_static
+    mode                      = var.mode
+    port_base                 = var.port_base
+    port_console              = var.port_console
     region                    = var.region
     secret_key                = var.secret_key
     service_name              = var.service_name

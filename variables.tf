@@ -107,16 +107,22 @@ variable "memory" {
   default     = 1024
 }
 
-variable "port" {
-  description = "Specifies a TCP/UDP port allocation"
+variable "mode" {
+  description = "Specifies the Minio mode"
   type        = string
-  default     = "http"
+  default     = "server"
 }
 
-variable "port_static" {
+variable "port_base" {
   description = "Specifies the static TCP/UDP port to allocate"
   type        = number
   default     = 9000
+}
+
+variable "port_console" {
+  description = "Specifies the static TCP/UDP port to allocate"
+  type        = number
+  default     = 9001
 }
 
 variable "resource_proxy" {

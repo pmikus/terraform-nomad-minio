@@ -112,6 +112,26 @@ job "${job_name}" {
       mode     = "delay"
     }
 
+    # The network stanza specifies the networking requirements for the task
+    # group, including the network mode and port allocations. When scheduling
+    # jobs in Nomad they are provisioned across your fleet of machines along
+    # with other jobs and services. Because you don't know in advance what host
+    # your job will be provisioned on, Nomad will provide your tasks with
+    # network configuration when they start up.
+    #
+    #     https://www.nomadproject.io/docs/job-specification/network
+    #
+    network {
+      port "base" {
+        static = ${port_base}
+        to     = ${port_base}
+      }
+      port "console" {
+        static = ${port_console}
+        to     = ${port_console}
+      }
+    }
+
     # The "task" stanza creates an individual unit of work, such as a Docker
     # container, web application, or batch processing.
     #
@@ -120,7 +140,7 @@ job "${job_name}" {
     task "${job_name}-task-1" {
       # The "driver" parameter specifies the task driver that should be used to
       # run the task.
-      driver = "docker"
+      driver = "exec"
 
     %{ if use_host_volume }
       volume_mount {
@@ -141,19 +161,27 @@ job "${job_name}" {
       # are specific to each driver, so please see specific driver
       # documentation for more information.
       config {
-        image        = "${image}"
-        dns_servers  = [
-          "172.17.0.1"
-        ]
-        network_mode = "host"
-        command      = "server"
         args         = [
-          " --console-address ':9001' ${volume_destination}"
+          "${mode}",
+          "${volume_destination}",
+          "-address", ":${port_static}",
+          "-console-address, ":9001"
         ]
-        port_map {
-          http       = ${port_static}
-        }
-        privileged   = false
+        command      = "local/minio"
+      }
+
+      # The artifact stanza instructs Nomad to fetch and unpack a remote resource,
+      # such as a file, tarball, or binary. Nomad downloads artifacts using the
+      # popular go-getter library, which permits downloading artifacts from a
+      # variety of locations using a URL as the input source.
+      #
+      # For more information and examples on the "artifact" stanza, please see
+      # the online documentation at:
+      #
+      #     https://www.nomadproject.io/docs/job-specification/artifact
+      #
+      artifact {
+        source      = "https://dl.min.io/server/minio/release/linux-amd64/minio"
       }
 
       # The env stanza configures a list of environment variables to populate
@@ -177,12 +205,12 @@ job "${job_name}" {
       #
       service {
         name       = "${service_name}"
-        port       = "http"
+        port       = "base"
         tags       = [ "${service_name}$${NOMAD_ALLOC_INDEX}" ]
         check {
           name     = "Min.io Server HTTP Check Live"
           type     = "http"
-          port     = "http"
+          port     = "base"
           protocol = "http"
           method   = "GET"
           path     = "/minio/health/live"
@@ -192,7 +220,7 @@ job "${job_name}" {
         check {
           name     = "Min.io Server HTTP Check Ready"
           type     = "http"
-          port     = "http"
+          port     = "base"
           protocol = "http"
           method   = "GET"
           path     = "/minio/health/ready"
@@ -211,20 +239,6 @@ job "${job_name}" {
       resources {
         cpu        = ${cpu}
         memory     = ${memory}
-        # The network stanza specifies the networking requirements for the task
-        # group, including the network mode and port allocations. When scheduling
-        # jobs in Nomad they are provisioned across your fleet of machines along
-        # with other jobs and services. Because you don't know in advance what host
-        # your job will be provisioned on, Nomad will provide your tasks with
-        # network configuration when they start up.
-        #
-        #     https://www.nomadproject.io/docs/job-specification/network
-        #
-        network {
-          port "http" {
-            static = ${port_static}
-          }
-        }
       }
     }
   }
