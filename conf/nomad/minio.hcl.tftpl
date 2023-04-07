@@ -8,18 +8,15 @@ job "${job_name}" {
   datacenters = "${datacenters}"
 
   # The "type" parameter controls the type of job, which impacts the scheduler's
-  # decision on placement. This configuration is optional and defaults to
-  # "service". For a full list of job types and their differences, please see
-  # the online documentation.
+  # decision on placement.
   #
-  #     https://www.nomadproject.io/docs/jobspec/schedulers
+  # https://www.nomadproject.io/docs/jobspec/schedulers
   #
   type        = "service"
 
   update {
     # The "max_parallel" parameter specifies the maximum number of updates to
-    # perform in parallel. In this case, this specifies to update a single task
-    # at a time.
+    # perform in parallel.
     max_parallel      = ${max_parallel}
 
     health_check      = "checks"
@@ -69,22 +66,15 @@ job "${job_name}" {
 %{ endif }
   }
 
-  # All groups in this job should be scheduled on different hosts.
-  constraint {
-    operator = "distinct_hosts"
-    value    = "true"
-  }
-
   # The "group" stanza defines a series of tasks that should be co-located on
   # the same Nomad client. Any task within a group will be placed on the same
   # client.
   #
-  #     https://www.nomadproject.io/docs/job-specification/group
+  # https://www.nomadproject.io/docs/job-specification/group
   #
   group "${job_name}-group-1" {
     # The "count" parameter specifies the number of the task groups that should
-    # be running under this group. This value must be non-negative and defaults
-    # to 1.
+    # be running under this group. This value must be non-negative.
     count = ${group_count}
 
     # The volume stanza allows the group to specify that it requires a given
@@ -92,6 +82,7 @@ job "${job_name}" {
     # as it will be exposed to task configuration.
     #
     # https://www.nomadproject.io/docs/job-specification/volume
+    #
     %{ if use_host_volume }
     volume "${job_name}-volume-1" {
       type      = "host"
@@ -112,6 +103,16 @@ job "${job_name}" {
       mode     = "delay"
     }
 
+    # The constraint allows restricting the set of eligible nodes. Constraints
+    # may filter on attributes or client metadata.
+    #
+    # https://www.nomadproject.io/docs/job-specification/constraint
+    #
+    constraint {
+      attribute = "$${node.class}"
+      value     = "${constraint_value}"
+    }
+
     # The network stanza specifies the networking requirements for the task
     # group, including the network mode and port allocations. When scheduling
     # jobs in Nomad they are provisioned across your fleet of machines along
@@ -119,7 +120,7 @@ job "${job_name}" {
     # your job will be provisioned on, Nomad will provide your tasks with
     # network configuration when they start up.
     #
-    #     https://www.nomadproject.io/docs/job-specification/network
+    # https://www.nomadproject.io/docs/job-specification/network
     #
     network {
       port "base" {
@@ -135,7 +136,7 @@ job "${job_name}" {
     # The "task" stanza creates an individual unit of work, such as a Docker
     # container, web application, or batch processing.
     #
-    #     https://www.nomadproject.io/docs/job-specification/task.html
+    # https://www.nomadproject.io/docs/job-specification/task
     #
     task "${job_name}-task-1" {
       # The "driver" parameter specifies the task driver that should be used to
@@ -170,18 +171,15 @@ job "${job_name}" {
         command      = "local/minio"
       }
 
-      # The artifact stanza instructs Nomad to fetch and unpack a remote resource,
-      # such as a file, tarball, or binary. Nomad downloads artifacts using the
-      # popular go-getter library, which permits downloading artifacts from a
-      # variety of locations using a URL as the input source.
+      # The artifact stanza instructs Nomad to fetch and unpack a remote
+      # resource, such as a file, tarball, or binary. Nomad downloads artifacts
+      # using the popular go-getter library, which permits downloading artifacts
+      # from a variety of locations using a URL as the input source.
       #
-      # For more information and examples on the "artifact" stanza, please see
-      # the online documentation at:
-      #
-      #     https://www.nomadproject.io/docs/job-specification/artifact
+      # https://www.nomadproject.io/docs/job-specification/artifact
       #
       artifact {
-        source      = "https://dl.min.io/server/minio/release/linux-amd64/minio"
+        source = "https://dl.min.io/server/minio/release/linux-amd64/minio"
       }
 
       # The env stanza configures a list of environment variables to populate
@@ -201,7 +199,7 @@ job "${job_name}" {
 
       # The service stanza instructs Nomad to register a service with Consul.
       #
-      #     https://www.nomadproject.io/docs/job-specification/service
+      # https://www.nomadproject.io/docs/job-specification/service
       #
       service {
         name       = "${service_name}"
@@ -234,7 +232,7 @@ job "${job_name}" {
       # This ensures the task will execute on a machine that contains enough
       # resource capacity.
       #
-      #     https://www.nomadproject.io/docs/job-specification/resources
+      # https://www.nomadproject.io/docs/job-specification/resources
       #
       resources {
         cpu        = ${cpu}

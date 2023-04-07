@@ -2,17 +2,16 @@ terraform {
   backend "consul" {
     address = "consul.service.consul:8500"
     scheme  = "http"
-    path    = "terraform/nomad"
+    path    = "terraform/minio"
   }
   required_providers {
     nomad = {
       source  = "hashicorp/nomad"
-      version = "~> 1.4.15"
+      version = ">= 1.4.16"
     }
-    template = {
-      source  = "hashicorp/template"
-      version = "~> 2.2.0"
-    }
+    #vault = {
+    #  version = ">= 3.2.1"
+    #}
   }
-  required_version = ">= 1.0.3"
+  required_version = ">= 1.3.6"
 }

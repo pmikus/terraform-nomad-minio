@@ -6,22 +6,19 @@
 # configurations.
 
 module "minio" {
-  source = "../"
   providers = {
-    nomad = nomad.vagrant
+    nomad = nomad.razer
   }
+  source = "../"
+
 
   # nomad
-  datacenters   = ["vagrant"]
-  volume_source = "volume-glacier1-1"
+  datacenters   = ["razer"]
+  volume_source = "volume-glacier"
 
   # minio
   job_name     = "minio"
-  group_count  = 1
   service_name = "minio"
-  host         = "http://10.0.2.15"
-  port_base    = 9000
-  image        = "minio/minio:latest"
   vault_secret = {
     use_vault_provider        = false,
     vault_kv_policy_name      = "kv-secret",
@@ -29,8 +26,6 @@ module "minio" {
     vault_kv_field_access_key = "access_key",
     vault_kv_field_secret_key = "secret_key"
   }
-  volume_destination = "/data/"
   use_host_volume    = true
-  use_canary         = true
-  envs               = ["MINIO_BROWSER=\"on\""]
+  volume_destination = "/data/"
 }
