@@ -27,5 +27,5 @@ module "minio" {
     vault_kv_field_secret_key = "secret_key"
   }
   use_host_volume    = true
-  volume_destination = "/data/"
+  volume_destination = "/data"
 }

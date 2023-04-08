@@ -49,6 +49,12 @@ variable "cpu" {
   default     = 1000
 }
 
+variable "constraint_value" {
+  description = "The constraint allows restricting the set of eligible nodes."
+  type        = string
+  default     = "compute"
+}
+
 variable "envs" {
   description = "Minio environment variables"
   type        = list(string)

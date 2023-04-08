@@ -165,8 +165,8 @@ job "${job_name}" {
         args         = [
           "${mode}",
           "${volume_destination}",
-          "-address", ":${port_static}",
-          "-console-address, ":9001"
+          "-address", ":${port_base}",
+          "-console-address", ":${port_console}"
         ]
         command      = "local/minio"
       }
